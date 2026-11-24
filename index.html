@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Studio IA gratuit</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#3a4de0">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+<style>
+:root{--bg:#f3f1ee;--side:#e9e6e1;--card:#fff;--ink:#1d1b19;--mute:#6f6a63;--line:#d9d4cc;--acc:#3a4de0;--acc-ink:#fff;--code:#14161f;--codeink:#e6e8f2;--warn:#fff1cf;--warnink:#664a00;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#1b1a19;--side:#141312;--card:#242220;--ink:#ece8e2;--mute:#9b958c;--line:#34312e;--acc:#7e8cff;--acc-ink:#12131f;--code:#0e0f15;--warn:#3a2f10;--warnink:#f5d57a;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+button,select,textarea,input{font:inherit;color:inherit}
+button{cursor:pointer}
+.app{height:100%;height:100dvh;display:grid;grid-template-columns:240px minmax(0,1fr) 0}
+.app.code{grid-template-columns:240px minmax(0,1fr) minmax(0,46%)}
+aside{background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0;overflow-y:auto;overflow-x:hidden}
+aside>*{flex-shrink:0}
+aside h1{font-size:1rem;margin:0;padding:14px 14px 6px}
+.new{margin:8px 12px;padding:9px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-weight:600}
+#list{flex:1 0 auto;min-height:110px;max-height:34vh;overflow:auto;padding:4px 8px}
+.ci{display:flex;align-items:center;gap:6px;border-radius:8px;padding:7px 8px;cursor:pointer}
+.ci:hover{background:var(--card)}
+.ci[aria-current=true]{background:var(--card);font-weight:600}
+.ci span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci button{border:0;background:transparent;color:var(--mute);padding:0 4px}
+.set{padding:10px 12px;border-top:1px solid var(--line);display:grid;gap:8px;font-size:.88rem}
+.set select,.set input:not([type=checkbox]){width:100%;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--card)}
+.set a{color:var(--acc);font-size:.85rem}
+.set label{display:flex;gap:8px;align-items:center}
+main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.head{display:none;padding:8px 12px;border-bottom:1px solid var(--line);gap:8px}
+#msgs{flex:1;overflow:auto;padding:20px 16px;display:flex;flex-direction:column;gap:16px}
+.row{max-width:760px;width:100%;margin:0 auto}
+.u{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;width:fit-content;max-width:90%;margin-left:auto;white-space:pre-wrap}
+.a{padding:0 4px}
+.a p{margin:.5em 0}
+.src{font-size:.82rem;color:var(--mute);margin-top:6px}
+.src a{color:var(--acc)}
+pre{background:var(--code);color:var(--codeink);border-radius:10px;padding:12px;overflow:auto;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;margin:.6em 0}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9em;background:var(--side);padding:1px 5px;border-radius:5px}
+pre code{background:none;padding:0}
+.codebtn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:5px 10px;font-size:.85rem;margin-right:6px}
+.hello{margin:auto;text-align:center;color:var(--mute);max-width:46ch}
+.hello h2{color:var(--ink);margin:0 0 6px}
+.sug{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.sug button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px}
+.err{background:var(--warn);color:var(--warnink);border-radius:10px;padding:8px 12px}
+.box{padding:10px 16px 16px}
+.in{max-width:760px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px;display:flex;gap:8px;align-items:flex-end}
+.in textarea{flex:1;border:0;background:transparent;resize:none;outline:none;max-height:160px;padding:6px 8px}
+.send{background:var(--acc);color:var(--acc-ink);border:0;border-radius:10px;padding:8px 14px;font-weight:600}
+.send:disabled{opacity:.5}
+.panel{display:none;flex-direction:column;border-left:1px solid var(--line);background:var(--card);min-width:0;min-height:0}
+.app.code .panel{display:flex}
+.tabs{display:flex;gap:4px;padding:8px;border-bottom:1px solid var(--line);align-items:center;flex-wrap:wrap}
+.tab{border:0;background:transparent;border-radius:8px;padding:5px 10px}
+.tab[aria-selected=true]{background:var(--ink);color:var(--bg)}
+.tabs .sp{flex:1}
+.pv{flex:1;min-height:0;position:relative}
+.pv>*{position:absolute;inset:0;width:100%;height:100%;border:0}
+#ed{background:var(--code);color:var(--codeink);font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;padding:12px;resize:none;outline:none}
+#fr{background:#fff}
+#con{overflow:auto;padding:10px;font:12.5px/1.5 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;background:var(--code);color:var(--codeink)}
+.mw{position:relative}
+#mpick{position:absolute;left:0;right:0;bottom:100%;margin-bottom:4px;max-height:36vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.25);z-index:30}
+#mpick .mh{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:6px 8px;border-bottom:1px solid var(--line);font-size:.8rem;color:var(--mute);position:sticky;top:0;background:var(--card)}
+#mpick .mi{display:flex;gap:6px;width:100%;text-align:left;border:0;background:transparent;padding:7px 10px;font-size:.85rem;word-break:break-all}
+#mpick .mi:hover,#mpick .mi.cur{background:var(--side)}
+#mpick .bd{font-size:.7rem;border-radius:6px;padding:0 5px;background:var(--acc);color:var(--acc-ink);white-space:nowrap;align-self:center}
+#mpick .em{padding:10px;font-size:.85rem;color:var(--mute)}
+.hid{display:none!important}
+.plan{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.plan .w{max-width:780px;margin:0 auto;padding:16px}
+.plan h2{margin:0 0 4px}
+.plan h3{margin:22px 0 4px;font-size:1rem}
+.plan progress{width:100%;height:10px;accent-color:var(--acc)}
+.it{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:start;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;margin:8px 0}
+.it .tt{font-weight:600}
+.it .ac{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.it .ac input{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:4px 8px}
+.sb{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 12px;min-width:84px;font-size:.85rem}
+.sb[data-s=doing]{background:var(--warn);color:var(--warnink);border-color:transparent}
+.sb[data-s=done]{background:var(--acc);color:var(--acc-ink);border-color:transparent}
+.a h2,.a h3,.a h4,.a h5{margin:.9em 0 .3em;line-height:1.25}
+.a table{border-collapse:collapse;margin:.5em 0}
+.a th,.a td{border:1px solid var(--line);padding:4px 8px;text-align:left}
+.a blockquote{margin:.5em 0;padding-left:12px;border-left:3px solid var(--line);color:var(--mute)}
+.a ul,.a ol{padding-left:1.4em;margin:.4em 0}
+.a a{color:var(--acc)}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+@media (max-width:1100px),(pointer:coarse){
+  .app,.app.code{grid-template-columns:minmax(0,1fr);grid-template-rows:1fr}
+  aside{position:fixed;inset:0 25% 0 0;z-index:5;transform:translateX(-102%);transition:transform .2s}
+  aside.open{transform:none}
+  .head{display:flex}
+  .app.code{grid-template-rows:1fr 48%}
+}
+@media (prefers-reduced-motion:reduce){aside{transition:none}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside id="side">
+    <h1>Studio IA gratuit</h1>
+    <button class="new" id="new">+ Nouvelle conversation</button>
+    <button class="new" id="planbtn" style="margin-top:0">Plan d’amélioration</button>
+    <input id="hs" type="search" placeholder="Rechercher dans l’historique" aria-label="Rechercher dans l’historique" style="margin:0 12px 6px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card)">
+    <div id="list"></div>
+    <div class="set">
+      <select id="prov" aria-label="Fournisseur"></select>
+      <div class="mw"><input type="text" id="mod" aria-label="Modèle" placeholder="Rechercher un modèle…" autocomplete="off" autocapitalize="off" spellcheck="false"><div id="mpick" hidden></div></div>
+      <button class="codebtn" id="best">⚡ Choisir le meilleur modèle (auto)</button>
+      <input type="password" id="key" aria-label="Clé API" placeholder="Clé API gratuite" autocomplete="off">
+      <a id="getkey" target="_blank" rel="noopener noreferrer" hidden>Obtenir une clé gratuite</a>
+      <button class="codebtn" id="login" hidden>Se connecter à Puter (gratuit)</button>
+      <button class="codebtn" id="wizbtn" hidden>Assistant : obtenir ma clé gratuite</button>
+      <button class="codebtn" id="orbtn" hidden>Connexion OpenRouter (clé automatique)</button>
+      
+      <button class="codebtn" id="inst" hidden>📲 Installer l’application</button>
+      <button class="codebtn" id="test">Tester la connexion</button>
+      <button class="codebtn" id="chk">Vérifier tous les fournisseurs</button>
+      <div id="st" class="src"></div>
+      <label><input type="checkbox" id="web" checked> Recherche web automatique</label>
+      <label><input type="checkbox" id="amod" checked> Modèle et fournisseur automatiques</label>
+      <div><button class="codebtn" id="exp">Exporter</button><button class="codebtn" id="imp">Importer</button><input type="file" id="impf" hidden></div>
+    </div>
+  </aside>
+  <main>
+    <div class="head"><button class="codebtn" id="menu">Conversations</button><button class="codebtn" id="showcode">Code</button></div>
+    <div id="warn" class="err" hidden style="margin:8px 12px;font-size:.85rem"></div>
+    <div id="msgs"></div>
+    <div class="box"><div id="chip" class="src" style="max-width:760px;margin:0 auto 6px"></div><div class="in">
+      <button class="codebtn" id="att" aria-label="Joindre un fichier" style="margin:0">📎</button>
+      <input type="file" id="file" hidden>
+      <textarea id="q" rows="1" placeholder="Posez une question ou décrivez le code à créer…" aria-label="Votre message"></textarea>
+      <button class="send" id="go">Envoyer</button>
+    </div></div>
+  </main>
+  <section class="panel" aria-label="Code">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-t="ed" aria-selected="true">Code</button>
+      <button class="tab" role="tab" data-t="fr" aria-selected="false">Aperçu</button>
+      <button class="tab" role="tab" data-t="con" aria-selected="false">Console</button>
+      <span class="sp"></span>
+      <button class="codebtn" id="run">Exécuter</button>
+      <button class="codebtn" id="hide">Masquer</button>
+      <button class="codebtn" id="fix">Corriger avec l’IA</button>
+      <button class="codebtn" id="cp">Copier</button>
+      <button class="codebtn" id="dl">Télécharger</button>
+    </div>
+    <div class="pv">
+      <textarea id="ed" spellcheck="false" aria-label="Code actuel"></textarea>
+      <iframe id="fr" class="hid" sandbox="allow-scripts allow-forms allow-modals" title="Aperçu"></iframe>
+      <div id="con" class="hid"></div>
+    </div>
+  </section>
+</div>
+
+<section class="plan" id="plan" hidden aria-label="Plan d’amélioration">
+  <div class="w">
+    <button class="codebtn" id="pclose">← Retour au chat</button>
+    <h2>Plan d’amélioration</h2>
+    <p class="src" style="font-size:.9rem">Objectif : une interface de type Claude qui utilise les modèles IA gratuits sans clé et sans erreur. Une clé ne peut pas être créée sans votre accord : le plan vise donc soit aucune clé (Puter), soit une clé générée en un clic (connexion OpenRouter). Touchez l’état d’une tâche pour le changer, choisissez une date, ou générez le code.</p>
+    <progress id="pbar" value="0" max="1"></progress>
+    <div class="src" id="ptxt"></div>
+    <div id="plist"></div>
+  </div>
+</section>
+<script>
+var $ = function(i){return document.getElementById(i)};
+var KEY = "studioia:v1";
+var S = (function(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}})();
+S.chats = S.chats || []; S.cur = S.cur || null; S.model = S.model || "openai"; if(S.web===undefined) S.web = true; if(S.amod===undefined) S.amod = true; S.ml = S.ml || {}; var MODELS = S.ml;
+function save(){try{localStorage.setItem(KEY, JSON.stringify(S,function(k,v){return k==="img"?undefined:v}))}catch(e){}}
+function chat(){return S.chats.filter(function(c){return c.id===S.cur})[0]}
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+
+var SYS = "Tu es un assistant en français, précis et concis. Quand l’utilisateur veut du code (site, application, script, appel d’API), réponds avec une courte explication puis UN SEUL bloc de code complet et exécutable : pour le web, un fichier HTML autonome avec CSS et JavaScript intégrés ; pour une API, un exemple fetch() fonctionnel avec gestion d’erreurs, idéalement dans une page HTML de test. Si du code actuel est fourni, modifie-le et renvoie la version complète corrigée. Si des sources web sont fournies, appuie-toi dessus et ne l’invente rien en dehors.";
+
+/* ---------- rendu ---------- */
+function inl(t){
+  return esc(t).replace(/`([^`]+)`/g,"<code>$1</code>").replace(/\*\*(.+?)\*\*/g,"<b>$1</b>")
+    .replace(/(^|[^*])\*([^*\n]+)\*/g,"$1<i>$2</i>")
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a target="_blank" rel="noopener noreferrer" href="$2">$1</a>');
+}
+function mdBlock(t){
+  var L=t.split("\n"), out="", i=0, list=null;
+  function close(){ if(list){ out+="</"+list+">"; list=null; } }
+  function special(l){ return /^(#{1,4})\s/.test(l)||/^\s*([-*]|\d+\.)\s/.test(l)||/^\s*\|.*\|\s*$/.test(l)||/^>\s?/.test(l); }
+  while(i<L.length){
+    var l=L[i], h=l.match(/^(#{1,4})\s+(.*)/), li=l.match(/^\s*([-*]|\d+\.)\s+(.*)/);
+    if(!l.trim()){ close(); i++; continue; }
+    if(h){ close(); out+="<h"+(h[1].length+1)+">"+inl(h[2])+"</h"+(h[1].length+1)+">"; i++; continue; }
+    if(li){ var tag=/\d/.test(li[1])?"ol":"ul"; if(list!==tag){ close(); out+="<"+tag+">"; list=tag; } out+="<li>"+inl(li[2])+"</li>"; i++; continue; }
+    if(/^\s*\|.*\|\s*$/.test(l)&&i+1<L.length&&/^\s*\|[\s:|-]+\|\s*$/.test(L[i+1])){
+      close();
+      var cells=function(r){ return r.trim().replace(/^\||\|$/g,"").split("|").map(function(c){return inl(c.trim())}); };
+      out+='<div style="overflow:auto"><table><tr>'+cells(l).map(function(c){return "<th>"+c+"</th>"}).join("")+"</tr>"; i+=2;
+      while(i<L.length&&/^\s*\|/.test(L[i])){ out+="<tr>"+cells(L[i]).map(function(c){return "<td>"+c+"</td>"}).join("")+"</tr>"; i++; }
+      out+="</table></div>"; continue;
+    }
+    if(/^>\s?/.test(l)){ close(); out+="<blockquote>"+inl(l.replace(/^>\s?/,""))+"</blockquote>"; i++; continue; }
+    close(); var run=[];
+    while(i<L.length&&L[i].trim()&&!special(L[i])){ run.push(inl(L[i])); i++; }
+    if(!run.length){ run.push(inl(L[i])); i++; }
+    out+="<p>"+run.join("<br>")+"</p>";
+  }
+  close(); return out;
+}
+function copyText(t,btn){
+  var ok=false, ta=document.createElement("textarea");
+  ta.value=t; ta.style.cssText="position:fixed;opacity:0;top:0"; document.body.appendChild(ta); ta.select();
+  try{ ok=document.execCommand("copy"); }catch(e){}
+  ta.remove();
+  if(!ok&&navigator.clipboard){ try{ navigator.clipboard.writeText(t); ok=true; }catch(e){} }
+  if(btn){ var o=btn.textContent; btn.textContent=ok?"Copié":"Copie impossible"; setTimeout(function(){btn.textContent=o},1500); }
+}
+var rafP=false;
+function upd(){ if(rafP) return; rafP=true; requestAnimationFrame(function(){ rafP=false; renderMsgs(); }); }
+function redo(x){
+  var c=chat(), i=c.msgs.indexOf(x), um=c.msgs[i-1]; if(!um||um.role!=="user") return;
+  c.msgs.splice(i-1,2); save(); renderAll(); pend=um.file||null; $("q").value=um.text||um.content; send();
+}
+function msgButtons(r,x,last){
+  var bar=document.createElement("div"); bar.style.marginTop="6px";
+  var cp=document.createElement("button"); cp.className="codebtn"; cp.textContent="Copier"; cp.onclick=function(){copyText(x.content,cp)}; bar.appendChild(cp);
+  if(last){ var rg=document.createElement("button"); rg.className="codebtn"; rg.textContent="Régénérer"; rg.onclick=function(){redo(x)}; bar.appendChild(rg); }
+  r.appendChild(bar);
+}
+function userButtons(r,x){
+  var bar=document.createElement("div"); bar.style.cssText="margin-top:4px;text-align:right";
+  var b=document.createElement("button"); b.className="codebtn"; b.textContent="Modifier";
+  b.onclick=function(){ var c=chat(), i=c.msgs.indexOf(x); c.msgs.splice(i); save(); renderAll(); pend=x.file||null; $("q").value=x.text||x.content; $("q").focus(); };
+  bar.appendChild(b); r.appendChild(bar);
+}
+function md(t){
+  var parts = t.split(/```/), out = "";
+  for(var i=0;i<parts.length;i++){
+    if(i%2){ var nl = parts[i].indexOf("\n"); var lang = parts[i].slice(0,nl).trim(); var code = parts[i].slice(nl+1).replace(/\n$/,"");
+      out += '<pre><code>'+esc(code)+'</code></pre>'+(lang?'':'');
+    } else {
+      out += mdBlock(parts[i]);
+    }
+  }
+  return out;
+}
+function lastCode(t){
+  var re=/```([\w+-]*)\n([\s\S]*?)```/g, m, last=null;
+  while((m=re.exec(t))) last={lang:(m[1]||"").toLowerCase(),text:m[2]};
+  return last;
+}
+function renderList(){
+  var l=$("list"); l.innerHTML="";
+  S.chats.slice().reverse().filter(function(c){
+    var t=($("hs").value||"").trim().toLowerCase(); if(!t) return true;
+    return c.title.toLowerCase().indexOf(t)>=0||c.msgs.some(function(m){return (m.content||"").toLowerCase().indexOf(t)>=0});
+  }).forEach(function(c){
+    var d=document.createElement("div"); d.className="ci"; d.setAttribute("aria-current", c.id===S.cur);
+    d.innerHTML='<span></span><button aria-label="Supprimer">✕</button>';
+    d.querySelector("span").textContent=c.title;
+    d.onclick=function(){S.cur=c.id;save();renderAll();$("side").classList.remove("open")};
+    d.querySelector("button").onclick=function(e){e.stopPropagation();S.chats=S.chats.filter(function(x){return x.id!==c.id});if(S.cur===c.id)S.cur=null;save();renderAll()};
+    l.appendChild(d);
+  });
+}
+function renderMsgs(){
+  var m=$("msgs"), c=chat(); m.innerHTML="";
+  if(!c||!c.msgs.length){
+    m.innerHTML='<div class="hello"><h2>Que voulez-vous créer ou savoir ?</h2><p>Modèles gratuits, recherche web automatique, et un espace code pour exécuter et améliorer ce que l’IA génère.</p><div class="sug"></div></div>';
+    ["Crée une page de chrono en HTML","Écris un exemple fetch pour l’API météo Open-Meteo","Quelles sont les dernières nouvelles sur l’exploration spatiale ?"].forEach(function(s){
+      var b=document.createElement("button");b.textContent=s;b.onclick=function(){$("q").value=s;send()};m.querySelector(".sug").appendChild(b)});
+    return;
+  }
+  c.msgs.forEach(function(x,idx){
+    var r=document.createElement("div"); r.className="row";
+    if(x.role==="user"){ r.innerHTML='<div class="u"></div>'; r.firstChild.textContent=x.show||x.content; }
+    else {
+      r.innerHTML='<div class="a '+(x.err?'err':'')+'">'+(x.err?esc(x.content):md(x.content))+'</div>'; if(x.err) errButtons(r,x);
+      if(x.src&&x.src.length){ var s=document.createElement("div"); s.className="src"; s.innerHTML="Sources : "+x.src.map(function(u){return '<a target="_blank" rel="noopener noreferrer" href="'+u.u+'">'+esc(u.t)+'</a>'}).join(", "); r.firstChild.appendChild(s); }
+      var lc=lastCode(x.content);
+      if(lc){ var b=document.createElement("button"); b.className="codebtn"; b.textContent="Ouvrir dans l’espace code"; b.onclick=function(){setCode(lc.lang,lc.text,true)}; r.firstChild.appendChild(b); }
+    }
+    if(!busy){
+      if(x.role==="assistant"&&!x.err&&x.content) msgButtons(r,x,idx===c.msgs.length-1);
+      if(x.role==="user"&&idx===c.msgs.length-2) userButtons(r,x);
+    }
+    m.appendChild(r);
+  });
+  m.scrollTop=m.scrollHeight;
+}
+function renderAll(){
+  renderList(); renderMsgs();
+  var c=chat(); $("app").classList.toggle("code", !!(c&&c.code));
+  if(c&&c.code){ $("ed").value=c.code.text; showTab("ed"); }
+}
+
+/* ---------- espace code ---------- */
+function showTab(t){
+  ["ed","fr","con"].forEach(function(i){$(i).classList.toggle("hid",i!==t)});
+  document.querySelectorAll(".tab").forEach(function(b){b.setAttribute("aria-selected",b.dataset.t===t)});
+}
+document.querySelectorAll(".tab").forEach(function(b){b.onclick=function(){showTab(b.dataset.t)}});
+function setCode(lang,text,runIt){
+  var c=chat(); if(!c) return;
+  c.code={lang:lang,text:text}; save();
+  $("app").classList.add("code"); $("ed").value=text; showTab("ed");
+  if(runIt) run();
+}
+$("ed").oninput=function(){var c=chat(); if(c&&c.code){c.code.text=$("ed").value;save()}};
+var CAP='(function(){function s(t,v){parent.postMessage({studio:1,t:t,v:String(v)},"*")}var l=console.log;console.log=function(){s("log",[].slice.call(arguments).join(" "));l.apply(console,arguments)};console.error=function(){s("err",[].slice.call(arguments).join(" "))};window.addEventListener("error",function(e){s("err",e.message+(e.lineno?" (ligne "+e.lineno+")":""))});window.addEventListener("unhandledrejection",function(e){s("err","Promesse rejetée : "+e.reason)})})();';
+var errs=[];
+function run(){
+  var c=chat(); if(!c||!c.code) return;
+  var lang=c.code.lang, t=$("ed").value; errs=[]; $("con").textContent="";
+  var doc;
+  if(lang==="html"||lang==="htm"||/^\s*<(!doctype|html)/i.test(t)) doc='<script>'+CAP+'<\/script>'+t;
+  else if(lang==="js"||lang==="javascript") doc='<body><script>'+CAP+'<\/script><script>'+t+'<\/script></body>';
+  else { $("con").textContent="L’exécution est disponible pour HTML et JavaScript. Pour "+(lang||"ce langage")+", copiez ou téléchargez le code."; showTab("con"); return; }
+  $("fr").srcdoc=doc; showTab("fr");
+}
+window.addEventListener("message",function(e){
+  var d=e.data; if(!d||!d.studio) return;
+  if(d.t==="err") errs.push(d.v);
+  $("con").textContent+=(d.t==="err"?"Erreur : ":"")+d.v+"\n";
+});
+$("run").onclick=run;
+$("hide").onclick=function(){$("app").classList.remove("code")};
+$("showcode").onclick=function(){var c=chat(); if(c&&c.code) $("app").classList.add("code")};
+$("cp").onclick=function(){
+  var ok=false, ta=document.createElement("textarea");
+  ta.value=$("ed").value; ta.style.cssText="position:fixed;opacity:0;top:0"; document.body.appendChild(ta); ta.select();
+  try{ ok=document.execCommand("copy"); }catch(e){}
+  ta.remove();
+  if(!ok&&navigator.clipboard){ try{ navigator.clipboard.writeText($("ed").value); ok=true; }catch(e){} }
+  $("cp").textContent=ok?"Copié":"Copie impossible";
+  setTimeout(function(){$("cp").textContent="Copier"},1500);
+};
+$("dl").onclick=function(){
+  var c=chat(), ext={html:"html",htm:"html",js:"js",javascript:"js",python:"py",py:"py",css:"css",json:"json"}[c.code.lang]||"txt";
+  var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([$("ed").value],{type:"text/plain"})); a.download="code."+ext; a.click();
+};
+$("fix").onclick=function(){
+  $("q").value = errs.length ? "Corrige ce code. Erreurs de la console :\n"+errs.join("\n") : "Améliore et vérifie ce code, puis renvoie la version complète.";
+  send();
+};
+
+/* ---------- recherche web automatique (Wikipédia) ---------- */
+var CODEY=/\b(code|script|html|css|javascript|js|python|api|fetch|fonction|programme|application|appli|site|page|bug|erreur|corrige|crée|créer|génère|écris)\b/i;
+async function wikiSearch(q){
+  var kw=q.toLowerCase().replace(/[?!.,;:"()]/g," ").split(/\s+/).filter(function(w){return w.length>3&&!/^(quel|quelle|quels|quelles|dans|pour|avec|sont|est-ce|comment|pourquoi|dernières|derniers|peux|peut|veux|donne|dis|moi|nous|vous|cette|cela|plus|très|about)$/.test(w)}).slice(0,6).join(" ")||q;
+  var u="https://fr.wikipedia.org/w/api.php?action=query&generator=search&gsrlimit=3&prop=extracts&exintro=1&explaintext=1&exchars=700&format=json&origin=*&gsrsearch="+encodeURIComponent(kw);
+  var r=await fetch(u); if(!r.ok) throw new Error("HTTP "+r.status);
+  var j=await r.json(); var p=j.query&&j.query.pages; if(!p) return [];
+  return Object.keys(p).map(function(k){return {t:p[k].title,x:p[k].extract||"",u:"https://fr.wikipedia.org/?curid="+k}});
+}
+
+/* ---------- fournisseurs (API compatibles OpenAI) ---------- */
+var PROV={
+ puter:{n:"Puter : 500+ modèles, sans clé",m:"gpt-5.4-nano",key:false},
+ pollinations:{n:"Pollinations (sans clé, instable)",u:"https://text.pollinations.ai/openai",m:"openai",key:false},
+ openrouter:{n:"OpenRouter (modèles gratuits)",u:"https://openrouter.ai/api/v1/chat/completions",m:"meta-llama/llama-3.3-70b-instruct:free",key:true,link:"https://openrouter.ai/keys"},
+ groq:{n:"Groq (gratuit, très rapide)",u:"https://api.groq.com/openai/v1/chat/completions",m:"llama-3.3-70b-versatile",key:true,link:"https://console.groq.com/keys"},
+ gemini:{n:"Google Gemini (gratuit)",u:"https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",m:"gemini-2.5-flash",key:true,link:"https://aistudio.google.com/apikey"},
+ mistral:{n:"Mistral (offre gratuite)",u:"https://api.mistral.ai/v1/chat/completions",m:"mistral-small-latest",key:true,link:"https://console.mistral.ai/api-keys"},
+ cerebras:{n:"Cerebras (gratuit, très rapide)",u:"https://api.cerebras.ai/v1/chat/completions",m:"gpt-oss-120b",key:true,link:"https://cloud.cerebras.ai/"},
+ huggingface:{n:"Hugging Face (milliers de modèles)",u:"https://router.huggingface.co/v1/chat/completions",m:"openai/gpt-oss-120b",key:true,link:"https://huggingface.co/settings/tokens/new?ownUserPermissions=inference.serverless.write&tokenType=fineGrained"}
+};
+var statusFn=null, puterP=null, noRetry=false, H={}, stopped=false, curAbort=null;
+async function readSSE(r,onDelta){
+  var rd=r.body.getReader(), dec=new TextDecoder(), buf="", acc="";
+  try{
+    for(;;){
+      var c=await rd.read(); if(c.done) break;
+      buf+=dec.decode(c.value,{stream:true});
+      var lines=buf.split("\n"); buf=lines.pop();
+      for(var i=0;i<lines.length;i++){
+        var l=lines[i].trim(); if(l.indexOf("data:")!==0) continue;
+        var d=l.slice(5).trim(); if(d==="[DONE]") continue;
+        try{ var j=JSON.parse(d), t=j.choices&&j.choices[0]&&j.choices[0].delta&&j.choices[0].delta.content; if(t){ acc+=t; onDelta(acc); } }catch(e){}
+      }
+    }
+  }catch(e){ if(!stopped) throw e; }
+  if(!acc&&!stopped) throw new Error("réponse vide");
+  return acc;
+}
+var LOCAL=/^(file|content):$/.test(location.protocol);
+function loadPuter(){
+  if(LOCAL) return Promise.reject(new Error("Puter ne fonctionne pas sur un fichier local : hébergez la page en https ou utilisez un autre fournisseur"));
+  if(window.puter) return Promise.resolve();
+  if(puterP) return puterP;
+  puterP=new Promise(function(ok,ko){var sc=document.createElement("script");sc.src="https://js.puter.com/v2/";sc.onload=ok;
+    sc.onerror=function(){puterP=null;ko(new Error("impossible de charger js.puter.com (réseau ou bloqueur de publicités)"))};document.head.appendChild(sc)});
+  return puterP;
+}
+function errText(e){return typeof e==="string"?e:(e&&(e.message||(e.error&&(e.error.message||e.error))))||JSON.stringify(e)}
+function puterText(r){
+  if(typeof r==="string") return r;
+  var c=r&&r.message&&r.message.content;
+  if(typeof c==="string") return c;
+  if(Array.isArray(c)) return c.map(function(x){return x.text||""}).join("");
+  return (r&&r.text)||"";
+}
+function rank(id){
+  var x=id.toLowerCase(), s=0;
+  if(/embed|whisper|tts|transcribe|image|dall|sora|moderation|guard|rerank|audio|realtime|vision-preview|search-preview|ocr/.test(x)) return -10;
+  [[/gpt-5|gpt-4\.1|gpt-4o/,5],[/claude|opus|sonnet/,5],[/gemini-(2\.5|3)/,5],[/llama-3\.3-70b|llama-4|llama-3\.1-70b/,4],[/qwen.*(72b|235b|max|3)/,3],[/deepseek/,3],[/mistral-(small|large|medium)|mixtral/,3],[/gemma/,2],[/flash|nano|mini|versatile|instant/,1]].forEach(function(p){ if(p[0].test(x)) s=Math.max(s,p[1]); });
+  if(/:free$/.test(x)) s+=1;
+  return s;
+}
+function best(k,n){ return (MODELS[k]||[]).filter(function(id){return rank(id)>-5}).sort(function(a,b){return rank(b)-rank(a)}).slice(0,n); }
+function fixCurrent(P){
+  var ids=MODELS[P]||[]; if(!ids.length||P!==S.prov) return;
+  var cur=S.models[P]||PROV[P].m;
+  if(ids.indexOf(cur)<0&&(!S.models[P]||S.models[P]===PROV[P].m)){ var b=best(P,1)[0]; if(b){ S.models[P]=b; save(); $("mod").value=b; } }
+}
+function setModels(P,ids){
+  if(P==="openrouter") ids=ids.filter(function(id){return /:free$/.test(id)});
+  var seen={}; ids=ids.filter(function(id){return !seen[id]&&(seen[id]=1)});
+  if(!ids.length) return;
+  MODELS[P]=ids; save(); fixCurrent(P);
+  if(P===S.prov) $("st").textContent=ids.length+" modèles : tapez dans le champ « Modèle » pour chercher.";
+}
+async function loadModels(){
+  fixCurrent("puter");
+  try{ await loadPuter(); var ms=await puter.ai.listModels();
+    setModels("puter",ms.map(function(x){return typeof x==="string"?x:(x&&(x.id||x.name))}).filter(Boolean)); }
+  catch(e){ if(!(MODELS.puter&&MODELS.puter.length)) $("st").textContent="Liste des modèles indisponible : "+errText(e); }
+}
+var pf="";
+function pickModel(id){ S.models[S.prov]=id; save(); $("mod").value=id; $("mpick").hidden=true; $("mod").blur(); }
+function renderPick(){
+  var box=$("mpick"), all=MODELS[S.prov]||[], cur=S.models[S.prov]||PROV[S.prov].m;
+  var toks=pf.toLowerCase().split(/\s+/).filter(Boolean);
+  var res=all.filter(function(id){ var x=id.toLowerCase(); return toks.every(function(t){return x.indexOf(t)>=0})&&(toks.length||rank(id)>-5); });
+  res.sort(function(a,b){return rank(b)-rank(a)||(a<b?-1:1)});
+  var n=res.length; res=res.slice(0,60);
+  box.innerHTML="";
+  var h=document.createElement("div"); h.className="mh";
+  var sp=document.createElement("span"); sp.textContent=all.length?(n+" résultat"+(n>1?"s":"")+(n>60?" (60 affichés : précisez)":"")):"Aucune liste";
+  var ab=document.createElement("button"); ab.className="codebtn"; ab.style.margin="0"; ab.textContent="⚡ Auto";
+  ab.onmousedown=function(e){e.preventDefault()}; ab.onclick=function(){ box.hidden=true; autoPick(); };
+  h.appendChild(sp); h.appendChild(ab); box.appendChild(h);
+  if(!all.length){
+    var em=document.createElement("div"); em.className="em"; em.textContent="Liste indisponible pour le moment (clé manquante ou réseau) : saisissez le nom du modèle, ou touchez ⚡ Auto."; box.appendChild(em);
+  } else if(!n){
+    var e2=document.createElement("div"); e2.className="em"; e2.textContent="Aucun modèle ne correspond. Le texte saisi sera utilisé tel quel."; box.appendChild(e2);
+  }
+  res.forEach(function(id){
+    var b=document.createElement("button"); b.className="mi"+(id===cur?" cur":"");
+    var t=document.createElement("span"); t.style.flex="1"; t.textContent=(rank(id)>=4?"★ ":"")+id; b.appendChild(t);
+    if(/:free$/.test(id)){ var bd=document.createElement("span"); bd.className="bd"; bd.textContent="gratuit"; b.appendChild(bd); }
+    b.onmousedown=function(e){e.preventDefault()}; b.onclick=function(){pickModel(id)};
+    box.appendChild(b);
+  });
+  box.hidden=false;
+}
+$("mod").onfocus=function(){ pf=""; this.select(); renderPick(); if(!(MODELS[S.prov]||[]).length) loadModelList(); };
+$("mod").oninput=function(){ pf=this.value; renderPick(); };
+$("mod").onblur=function(){ setTimeout(function(){$("mpick").hidden=true},250); };
+async function autoPick(){
+  var P=S.prov, ids=best(P,6);
+  if(!ids.length){ $("st").textContent="Chargement de la liste des modèles…"; await loadModelList(); ids=best(P,6); }
+  if(!ids.length){ $("st").textContent="Aucune liste de modèles : vérifiez la clé ou la connexion."; return; }
+  for(var i=0;i<ids.length;i++){
+    $("st").textContent="Test du modèle "+ids[i]+" ("+(i+1)+"/"+ids.length+")…";
+    try{ await callOne(P,[{role:"user",content:"Réponds : OK"}],true,null,ids[i]);
+      S.models[P]=ids[i]; save(); $("mod").value=ids[i]; H[P]="ok"; refreshOpts();
+      $("st").textContent="Modèle choisi automatiquement : "+ids[i]; return ids[i]; }catch(e){}
+  }
+  $("st").textContent="Aucun des meilleurs modèles n’a répondu : essayez un autre fournisseur.";
+}
+$("best").onclick=autoPick;
+$("amod").checked=S.amod; $("amod").onchange=function(){S.amod=this.checked;save()};
+async function tryProv(k,messages,onDelta){
+  try{ return await callOne(k,messages,false,onDelta); }
+  catch(e){
+    if(!S.amod||!/404|400|model|not found|no endpoints|unsupported|deprecated|decommission/i.test(errText(e))) throw e;
+    var cur=S.models[k]||PROV[k].m, alts=best(k,4).filter(function(id){return id!==cur}).slice(0,3);
+    for(var i=0;i<alts.length;i++){
+      if(statusFn) statusFn("Modèle indisponible : essai avec "+alts[i]+"…");
+      try{ var o=await callOne(k,messages,false,onDelta,alts[i]); S.models[k]=alts[i]; save(); if(k===S.prov) $("mod").value=alts[i]; return o; }catch(e2){}
+    }
+    throw e;
+  }
+}
+async function callLLM(messages,onDelta,vision){
+  var usable=function(k){return k!=="puter"&&(!PROV[k].key||S.keys[k])}, order=[S.prov];
+  if(S.last&&S.last!==S.prov&&usable(S.last)) order.push(S.last);
+  Object.keys(PROV).forEach(function(k){ if(order.indexOf(k)<0&&usable(k)) order.push(k); });
+  order=order.filter(function(k){return H[k]!=="ko"}).concat(order.filter(function(k){return H[k]==="ko"}));
+  if(vision&&S.amod&&S.keys.gemini) order=["gemini"].concat(order.filter(function(k){return k!=="gemini"})); if(!S.amod) order=[S.prov]; noRetry=order.length>1; var first=null;
+  for(var i=0;i<order.length;i++){
+    try{ var outp=await tryProv(order[i],messages,onDelta); H[order[i]]="ok"; S.last=order[i]; save(); refreshOpts(); return outp; }
+    catch(e){ H[order[i]]="ko"; refreshOpts(); if(!first) first=e; if(i+1<order.length&&statusFn) statusFn("« "+PROV[order[i]].n+" » indisponible : essai avec « "+PROV[order[i+1]].n+" »…"); }
+  }
+  throw first;
+}
+async function callOne(prov,messages,nr,onDelta,model){
+  var P=PROV[prov], k=S.keys[prov]||"", m=model||S.models[prov]||P.m;
+  if(prov==="puter"){
+    try{ await loadPuter(); if(onDelta){
+        var rs=await puter.ai.chat(messages,{model:m,stream:true});
+        if(rs&&rs[Symbol.asyncIterator]){
+          var acc0="";
+          try{ for await(var part of rs){ if(stopped) break; var tx=part&&part.text; if(tx){ acc0+=tx; onDelta(acc0); } } }catch(e){ if(!stopped) throw e; }
+          if(!acc0&&!stopped) throw new Error("réponse vide"); return acc0;
+        }
+        var o1=puterText(rs); if(!o1) throw new Error("réponse vide"); return o1;
+      }
+      var o0=puterText(await puter.ai.chat(messages,{model:m})); if(!o0) throw new Error("réponse vide"); return o0; }
+    catch(e){ throw new Error("Puter : "+errText(e)); }
+  }
+  if(P.key&&!k) throw new Error("clé manquante pour "+P.n);
+  var h={"Content-Type":"application/json"}; if(k) h.Authorization="Bearer "+k;
+  var r, txt;
+  for(var n=0;n<3;n++){
+    var ac=new AbortController(); curAbort=ac; var tm=setTimeout(function(){ac.abort()},nr?12000:40000);
+    try{ r=await fetch(P.u,{method:"POST",headers:h,signal:ac.signal,body:JSON.stringify({model:m,messages:messages,stream:!!onDelta})}); clearTimeout(tm); }
+    catch(e){ clearTimeout(tm); throw new Error(e&&e.name==="AbortError"?"délai dépassé":"connexion impossible (réseau, bloqueur de publicités ou service arrêté)"); }
+    if(r.ok&&onDelta&&/event-stream/.test(r.headers.get("content-type")||"")) return await readSSE(r,onDelta);
+    txt=await r.text();
+    if((r.status===503||r.status===429)&&n<2&&!noRetry&&!nr){
+      for(var s2=10;s2>0;s2--){ if(statusFn) statusFn("Service gratuit saturé : nouvelle tentative dans "+s2+" s ("+(n+1)+"/2)…"); await new Promise(function(ok){setTimeout(ok,1000)}); }
+      continue;
+    }
+    break;
+  }
+  if(!r.ok) throw new Error((r.status===503||r.status===429) ? "le service gratuit est saturé (HTTP "+r.status+")" : "HTTP "+r.status+" — "+txt.slice(0,160));
+  var j; try{ j=JSON.parse(txt); }catch(e){ if(txt.trim()) return txt; throw new Error("réponse illisible"); }
+  var out=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
+  if(!out) throw new Error("réponse vide : "+txt.slice(0,120));
+  return out;
+}
+
+/* ---------- envoi ---------- */
+var busy=false;
+async function send(){
+  var t=$("q").value.trim(); if(!t&&pend) t="Analyse ce fichier : résume-le et signale les points importants."; if(!t||busy) return;
+  busy=true; stopped=false; $("go").textContent="Arrêter"; $("q").value="";
+  var sg=null; try{ if(!LOCAL&&S.prov==="puter"&&window.puter&&!puter.auth.isSignedIn()) sg=puter.auth.signIn().catch(function(){}); }catch(e){}
+  var c=chat();
+  if(!c){ c={id:"c"+Date.now(),title:t.slice(0,40),msgs:[],code:null}; S.chats.push(c); S.cur=c.id; }
+  var um={role:"user",content:t,text:t};
+  if(pend){ if(pend.img){ um.content=t; um.show=t+"\n🖼 "+pend.name; um.img=pend.img; } else { um.content=t+"\n\nFichier « "+pend.name+" » :\n```\n"+pend.text+"\n```"; um.show=t+"\n📎 "+pend.name; } um.file=pend; pend=null; $("chip").textContent=""; }
+  c.msgs.push(um); save(); renderAll();
+  var wait={role:"assistant",content:"Réflexion en cours…"}; c.msgs.push(wait); renderMsgs();
+  statusFn=function(x){wait.content=x;renderMsgs()};
+  var ctx="", src=[], searchNote="";
+  if(sg){ wait.content="Connexion à Puter…"; renderMsgs(); await sg; }
+  try{
+    if($("web").checked && !CODEY.test(t)){
+      wait.content="Recherche sur le web…"; renderMsgs();
+      try{ var res=await webSearch(t); src=res.map(function(x){return {t:x.t,u:x.u}});
+        if(res.length) ctx="Sources web (actualités et Wikipédia) :\n"+res.map(function(x,i){return "["+(i+1)+"] "+x.t+" : "+x.x}).join("\n\n"); else searchNote="Aucun résultat trouvé sur le web pour cette question."; if(NEWSY.test(t)&&!res.some(function(x){return x.news})) searchNote=(searchNote?searchNote+" ":"")+"Actualités récentes indisponibles : la réponse peut être périmée."; }catch(e){ searchNote="La recherche web a échoué ("+e.message+") : la réponse vient du modèle seul."; }
+    }
+    var sys=SYS+(ctx?"\n\n"+ctx:"")+(c.code?"\n\nCode actuel ("+(c.code.lang||"texte")+") :\n```\n"+c.code.text+"\n```":"");
+    var hist=c.msgs.filter(function(m){return m!==wait&&!m.err}).slice(-12).map(function(m,i,a){var ci=(m.img&&i===a.length-1)?[{type:"text",text:m.content},{type:"image_url",image_url:{url:m.img}}]:m.content; return {role:m.role,content:ci}});
+    var out=await callLLM([{role:"system",content:sys}].concat(hist),function(tt){ wait.content=tt; wait.stream=tt; upd(); },!!um.img);
+    wait.content=out+(searchNote?"\n\n("+searchNote+")":""); wait.src=src;
+    var lc=lastCode(out); if(lc){ c.code={lang:lc.lang,text:lc.text}; }
+    save(); renderAll(); if(lc&&/^(html|htm|js|javascript)$/.test(lc.lang)) run();
+  }catch(e){
+    if(stopped){ wait.err=false; wait.content=wait.stream||"Génération arrêtée."; save(); renderAll(); }
+    else{ wait.err=true; wait.content=friendly(e.message); save(); renderMsgs(); }
+  }
+  busy=false; $("go").textContent="Envoyer"; renderMsgs();
+}
+var pend=null;
+$("att").onclick=function(){$("file").click()};
+$("file").onchange=function(){
+  var f=this.files[0]; this.value=""; if(!f) return;
+  if(/^image\//.test(f.type)) return readImage(f);
+  if(f.type==="application/pdf"||/\.pdf$/i.test(f.name)) return readPdf(f);
+  if(f.size>400000){ $("chip").textContent="Fichier trop gros (400 Ko maximum)."; return; }
+  var rd=new FileReader();
+  rd.onload=function(){
+    var tx=String(rd.result);
+    if(tx.slice(0,2000).indexOf("\u0000")>-1){ $("chip").textContent="Format non lisible : seuls les fichiers texte, CSV, JSON et code sont pris en charge (pas les PDF ni les images)."; return; }
+    pend={name:f.name,text:tx.slice(0,14000)};
+    $("chip").textContent="📎 "+f.name+(tx.length>14000?" (tronqué à 14 000 caractères)":"")+" — joint au prochain message";
+  };
+  rd.readAsText(f);
+};
+$("go").onclick=function(){ if(busy){ stopped=true; try{ if(curAbort) curAbort.abort(); }catch(e){} } else send(); };
+$("q").onkeydown=function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}};
+$("q").oninput=function(){this.style.height="auto";this.style.height=Math.min(this.scrollHeight,160)+"px"};
+$("new").onclick=function(){S.cur=null;save();renderAll();$("side").classList.remove("open");$("q").focus()};
+$("menu").onclick=function(){$("side").classList.toggle("open")};
+if(!S.v2){S.prov="puter";S.v2=1;save()} S.prov=S.prov||"puter"; S.keys=S.keys||{}; S.models=S.models||{}; if(LOCAL&&S.prov==="puter"){ S.prov="pollinations"; save(); }
+var ps=$("prov"); Object.keys(PROV).forEach(function(k){var o=document.createElement("option");o.value=k;o.textContent=PROV[k].n;ps.appendChild(o)});
+function syncProv(){var P=PROV[S.prov];ps.value=S.prov;$("mod").value=S.models[S.prov]||P.m;$("key").value=S.keys[S.prov]||"";$("key").hidden=!P.key;$("getkey").hidden=!P.key;$("getkey").href=P.link||"#";$("wizbtn").hidden=!P.key;$("orbtn").hidden=S.prov!=="openrouter";$("login").hidden=S.prov!=="puter";loadModelList()}
+ps.onchange=function(){S.prov=ps.value;save();syncProv();$("st").textContent=""};
+$("mod").onchange=function(){S.models[S.prov]=this.value.trim();save()};
+$("key").onchange=function(){S.keys[S.prov]=this.value.trim();save();loadModelList()};
+$("test").onclick=async function(){
+  $("st").textContent="Test en cours…"; statusFn=function(x){$("st").textContent=x}; S.models[S.prov]=$("mod").value.trim(); S.keys[S.prov]=$("key").value.trim(); save();
+  try{ noRetry=false; var o=await callOne(S.prov,[{role:"user",content:"Réponds uniquement : OK"}]); $("st").textContent="Connexion réussie : "+o.slice(0,40); }
+  catch(e){ $("st").textContent="Échec : "+e.message; }
+};
+if(/^(content|file):$/.test(location.protocol)){
+  $("warn").hidden=false;
+  $("warn").textContent="Fichier ouvert en local : Puter est désactivé (il exige une page hébergée en https). Pollinations fonctionne sans clé ; Groq, Gemini, Cerebras ou OpenRouter avec une clé gratuite sont plus fiables. Touchez ce message pour le fermer.";
+  $("warn").onclick=function(){this.hidden=true};
+}
+$("login").onclick=function(){
+  if(!window.puter){ $("st").textContent="Chargement de Puter…"; loadPuter().then(function(){$("st").textContent="Prêt : touchez à nouveau le bouton."}).catch(function(e){$("st").textContent=errText(e)}); return; }
+  puter.auth.signIn().then(function(){$("st").textContent="Connecté à Puter.";loadModels()}).catch(function(){$("st").textContent="Connexion annulée ou refusée."});
+};
+syncProv(); $("web").checked=S.web;
+$("web").onchange=function(){S.web=this.checked;save()};
+/* ---------- étape 1 : fiabilité ---------- */
+function friendly(m){
+  if(/clé manquante/.test(m)) return "Il manque la clé de ce fournisseur. Collez-la dans les réglages ou choisissez Puter.";
+  if(/cancel/i.test(m)) return "La connexion à Puter a été annulée. Touchez « Se connecter à Puter » dans les réglages, puis réessayez.";
+  if(/saturé|503|429/.test(m)) return "Le service gratuit est saturé en ce moment. Réessayez dans un instant ou changez de fournisseur.";
+  if(/401|403|Unauthorized|invalid/i.test(m)) return "La clé est refusée. Vérifiez-la dans les réglages.";
+  if(/image|vision|multimodal/i.test(m)) return "Ce modèle ne lit pas les images. Choisissez un modèle avec vision (Gemini avec clé gratuite, par exemple).";
+  if(/404|model/i.test(m)) return "Ce modèle n’est plus disponible. Choisissez-en un autre dans la liste des modèles.";
+  if(/délai/.test(m)) return "Le service met trop de temps à répondre. Réessayez ou changez de fournisseur.";
+  if(/connexion impossible/.test(m)) return "Pas de connexion au service. Vérifiez votre réseau ou désactivez le bloqueur de publicités.";
+  return "Le modèle n’a pas répondu ("+m.slice(0,120)+").";
+}
+function errButtons(r,x){
+  var bar=document.createElement("div"); bar.style.marginTop="8px";
+  var a=document.createElement("button"); a.className="codebtn"; a.textContent="Réessayer";
+  a.onclick=function(){
+    var c=chat(), i=c.msgs.indexOf(x), um=c.msgs[i-1]; if(!um||um.role!=="user") return;
+    c.msgs.splice(i-1,2); save(); renderAll(); pend=um.file||null; $("q").value=um.text||um.content; send();
+  };
+  var b=document.createElement("button"); b.className="codebtn"; b.textContent="Changer de fournisseur ou de modèle";
+  b.onclick=function(){ $("side").classList.add("open"); $("prov").focus(); };
+  bar.appendChild(a); bar.appendChild(b); r.firstChild.appendChild(bar);
+}
+function refreshOpts(){
+  var ic={ok:"🟢",ko:"🔴"};
+  Array.prototype.forEach.call(ps.options,function(o){ o.textContent=(ic[H[o.value]]||"⚪")+" "+PROV[o.value].n; });
+}
+async function checkAll(){
+  var ks=Object.keys(PROV).filter(function(k){return k!=="puter"&&(!PROV[k].key||S.keys[k])});
+  $("st").textContent="Vérification des fournisseurs…";
+  await Promise.all(ks.map(async function(k){
+    try{ await callOne(k,[{role:"user",content:"Réponds : OK"}],true); H[k]="ok"; }catch(e){ H[k]="ko"; }
+    refreshOpts();
+  }));
+  if(S.amod&&H[S.prov]==="ko"){ var alt=ks.filter(function(k){return H[k]==="ok"})[0]; if(alt){ S.prov=alt; save(); syncProv(); refreshOpts(); $("st").textContent="Fournisseur « "+PROV[alt].n+" » choisi automatiquement (le précédent ne répond pas)."; return; } }
+  $("st").textContent="🟢 fonctionne · 🔴 indisponible · ⚪ non testé (Puter demande une connexion).";
+}
+async function loadModelList(){
+  var P=S.prov; if(P==="puter") return loadModels();
+  var urls={openrouter:"https://openrouter.ai/api/v1/models",groq:"https://api.groq.com/openai/v1/models",gemini:"https://generativelanguage.googleapis.com/v1beta/openai/models",mistral:"https://api.mistral.ai/v1/models",cerebras:"https://api.cerebras.ai/v1/models",huggingface:"https://router.huggingface.co/v1/models",pollinations:"https://text.pollinations.ai/models"};
+  var k=S.keys[P]||"";
+  fixCurrent(P);
+  if(PROV[P].key&&!k&&P!=="openrouter") return;
+  try{
+    var r=await fetch(urls[P],{headers:k?{Authorization:"Bearer "+k}:{}}); if(!r.ok) throw new Error("HTTP "+r.status);
+    var j=await r.json(), arr=Array.isArray(j)?j:(j.data||j.models||[]);
+    var ids=arr.map(function(x){return typeof x==="string"?x:(x.id||x.name)}).filter(Boolean).map(function(id){return id.replace(/^models\//,"")});
+    setModels(P,ids);
+  }catch(e){ if(!(MODELS[P]&&MODELS[P].length)) $("st").textContent="Liste des modèles indisponible ("+errText(e)+")."; }
+}
+$("chk").onclick=checkAll;
+refreshOpts(); setTimeout(checkAll,1500);
+
+/* ---------- étape 2 : clés automatiques ---------- */
+var KEYRX={openrouter:/^sk-or-/,groq:/^gsk_/,gemini:/^AIza/,mistral:/^[A-Za-z0-9]{28,40}$/,cerebras:/^csk-/,huggingface:/^hf_/}, wiz=false, kt=null;
+function startWizard(){
+  var P=PROV[S.prov]; if(!P.key){ $("st").textContent="Ce fournisseur n’a pas besoin de clé."; return; }
+  window.open(P.link,"_blank","noopener"); wiz=true;
+  $("st").textContent="1) Créez la clé gratuite dans l’onglet ouvert. 2) Copiez-la. 3) Revenez ici : elle est détectée et testée automatiquement.";
+}
+async function tryClipboard(){
+  if(!wiz) return; wiz=false; var t="";
+  try{ t=(await navigator.clipboard.readText()).trim(); }catch(e){}
+  if(t&&KEYRX[S.prov]&&KEYRX[S.prov].test(t)){ $("key").value=t; S.keys[S.prov]=t; save(); $("test").click(); }
+  else{ $("key").focus(); $("st").textContent="Collez la clé dans le champ « Clé API » (appui long, puis Coller) : le test démarre tout seul."; }
+}
+window.addEventListener("focus",function(){ if(wiz) setTimeout(tryClipboard,300); });
+document.addEventListener("visibilitychange",function(){ if(!document.hidden&&wiz) setTimeout(tryClipboard,300); });
+$("key").oninput=function(){
+  var v=this.value.trim();
+  if(v.length>=20&&(!KEYRX[S.prov]||KEYRX[S.prov].test(v))){ S.keys[S.prov]=v; save(); clearTimeout(kt); kt=setTimeout(function(){ wiz=false; $("test").click(); },600); }
+};
+$("wizbtn").onclick=startWizard;
+
+function b64u(buf){ return btoa(String.fromCharCode.apply(null,new Uint8Array(buf))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+async function orLogin(){
+  if(location.protocol!=="https:"||!window.crypto||!crypto.subtle){ $("st").textContent="Cette connexion exige que la page soit hébergée en https (étape 5 du plan). En attendant, utilisez l’assistant de clé."; return; }
+  var v=b64u(crypto.getRandomValues(new Uint8Array(48)));
+  var ch=b64u(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(v)));
+  try{ localStorage.setItem("studioia:pkce",v); }catch(e){}
+  location.href="https://openrouter.ai/auth?callback_url="+encodeURIComponent(location.origin+location.pathname)+"&code_challenge="+ch+"&code_challenge_method=S256";
+}
+async function orReturn(){
+  var code=null, v=null;
+  try{ code=new URLSearchParams(location.search).get("code"); v=localStorage.getItem("studioia:pkce"); }catch(e){}
+  if(!code||!v) return;
+  try{ history.replaceState(null,"",location.pathname); }catch(e){}
+  try{
+    var r=await fetch("https://openrouter.ai/api/v1/auth/keys",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code:code,code_verifier:v,code_challenge_method:"S256"})});
+    var j=await r.json(); if(!j.key) throw new Error("HTTP "+r.status);
+    S.keys.openrouter=j.key; S.prov="openrouter"; save(); syncProv(); $("st").textContent="Clé OpenRouter créée automatiquement."; $("test").click();
+  }catch(e){ $("st").textContent="Connexion OpenRouter échouée : "+errText(e); }
+  try{ localStorage.removeItem("studioia:pkce"); }catch(e){}
+}
+$("orbtn").onclick=orLogin;
+orReturn();
+
+$("hs").oninput=renderList;
+$("exp").onclick=function(){
+  var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([JSON.stringify({chats:S.chats},null,1)],{type:"application/json"}));
+  a.download="conversations-studio-ia.json"; a.click();
+};
+$("imp").onclick=function(){ $("impf").click(); };
+$("impf").onchange=function(){
+  var f=this.files[0]; this.value=""; if(!f) return;
+  var rd=new FileReader();
+  rd.onload=function(){
+    try{
+      var j=JSON.parse(rd.result), arr=Array.isArray(j)?j:j.chats, n=0;
+      arr.forEach(function(c){ if(c&&c.id&&c.msgs&&!S.chats.some(function(x){return x.id===c.id})){ S.chats.push(c); n++; } });
+      save(); renderAll(); $("st").textContent=n+" conversation(s) importée(s).";
+    }catch(e){ $("st").textContent="Fichier d’import invalide."; }
+  };
+  rd.readAsText(f);
+};
+
+/* ---------- plan d’amélioration ---------- */
+var P1="Déjà réalisé", P2="Étape 1 · Fiabilité (zéro erreur)", P3="Étape 2 · Clés automatiques", P4="Étape 3 · Fonctions de type Claude", P5="Étape 4 · Recherche et fichiers", P6="Étape 5 · Android et hébergement";
+var PLAN=[
+ ["a1",P1,"Chat avec historique des conversations","haute","done","Enregistré dans le navigateur."],
+ ["a2",P1,"Espace code : édition, aperçu, console, téléchargement","haute","done","HTML et JavaScript exécutables."],
+ ["a3",P1,"Recherche web automatique (Wikipédia) et analyse de fichiers texte","moyenne","done","Limitée à Wikipédia."],
+ ["a4",P1,"Relance automatique et bascule entre fournisseurs","haute","done","Gère les erreurs 503 et 429."],
+ ["a5",P1,"Puter (500+ modèles sans clé), Groq, Gemini, OpenRouter, Mistral","haute","done","Puter demande une connexion."],
+ ["a6",P1,"Adaptation Android (copie, clavier, bandeau fichier local)","moyenne","done","À valider sur votre téléphone."],
+ ["b1",P2,"Test de santé de chaque fournisseur avec pastille verte ou rouge","haute","done","Un test léger à l’ouverture, sans bloquer l’écran."],
+ ["b2",P2,"Retenir le dernier fournisseur qui a fonctionné et l’essayer en premier","haute","done","Réduit les erreurs et l’attente."],
+ ["b3",P2,"Listes de modèles gratuits chargées automatiquement (OpenRouter, Groq, Gemini)","haute","done","Appel /models : fini les noms de modèles périmés."],
+ ["b4",P2,"Messages d’erreur simples avec boutons Réessayer et Changer de modèle","moyenne","done","Un message court, une action."],
+ ["b5",P2,"Recherche de modèles avec filtre, choix automatique du meilleur modèle et bascule si un modèle échoue","haute","done","Liste en cache, bouton ⚡ Auto, option « automatiques »."],
+ ["c1",P3,"Connexion OpenRouter en un clic (OAuth PKCE) qui crée la clé automatiquement","haute","doing","Code prêt, non testé : s’active une fois la page hébergée en https."],
+ ["c2",P3,"Assistant de clé guidé : ouvrir le lien, coller, tester automatiquement","moyenne","done","Fonctionne même sans hébergement."],
+ ["c3",P3,"Connexion Puter automatique au premier message","moyenne","done","Évite l’erreur « Authentication canceled »."],
+ ["d1",P4,"Réponses affichées au fur et à mesure (streaming)","haute","done","Supporté par Puter et les API compatibles OpenAI."],
+ ["d2",P4,"Markdown complet : titres, listes, tableaux, liens","moyenne","done","Rendu actuel limité au gras, code et paragraphes."],
+ ["d3",P4,"Boutons Arrêter, Régénérer et Copier sur chaque réponse","moyenne","done",""],
+ ["d4",P4,"Modifier un message envoyé et relancer","basse","done",""],
+ ["d5",P4,"Recherche dans l’historique, export et import des conversations (JSON)","basse","done","Sauvegarde contre l’effacement du navigateur."],
+ ["e1",P5,"Recherche web multi-sources (actualités) via un modèle avec recherche intégrée","haute","done","Articles des 7 derniers jours (GDELT) puis Wikipédia, sans clé."],
+ ["e2",P5,"Lecture de PDF et d’images (pdf.js, modèles avec vision)","moyenne","done","PDF avec texte (pdf.js) et images (modèle avec vision, Gemini en priorité)."],
+ ["f1",P6,"Héberger la page (GitHub Pages ou Netlify) pour obtenir une adresse https","haute","doing","Prérequis de Puter fiable, de l’OAuth et du mode installable. Il reste à déposer le dossier sur Netlify."],
+ ["f2",P6,"Version installable (PWA) sur l’écran d’accueil Android","moyenne","done","Fichiers manifest.webmanifest, sw.js et icônes fournis avec index.html."],
+ ["f3",P6,"Mode hors ligne pour l’historique et le code","basse","done","Historique et code disponibles hors ligne ; le chat IA reste en ligne."]
+];
+var STS=["todo","doing","done"], STL={todo:"À faire",doing:"En cours",done:"Fait"};
+function renderPlan(){
+  S.plan=S.plan||{}; S.due=S.due||{};
+  var box=$("plist"); box.innerHTML=""; var done=0, cur="";
+  PLAN.forEach(function(x){ if((S.plan[x[0]]||x[4])==="done") done++; });
+  $("pbar").max=PLAN.length; $("pbar").value=done; $("ptxt").textContent=done+" tâches terminées sur "+PLAN.length;
+  PLAN.forEach(function(x){
+    if(x[1]!==cur){ cur=x[1]; var h=document.createElement("h3"); h.textContent=cur; box.appendChild(h); }
+    var st=S.plan[x[0]]||x[4], d=document.createElement("div"); d.className="it";
+    d.innerHTML='<button class="sb"></button><div><div class="tt"></div><div class="src"></div></div><div class="ac"></div>';
+    var sb=d.querySelector(".sb"); sb.dataset.s=st; sb.textContent=STL[st];
+    sb.onclick=function(){ S.plan[x[0]]=STS[(STS.indexOf(st)+1)%3]; save(); renderPlan(); };
+    d.querySelector(".tt").textContent=x[2];
+    d.querySelector(".src").textContent="Priorité "+x[3]+(x[5]?" · "+x[5]:"");
+    if(st!=="done"){
+      var ac=d.querySelector(".ac"), di=document.createElement("input"), b=document.createElement("button");
+      di.type="date"; di.value=S.due[x[0]]||""; di.setAttribute("aria-label","Date prévue"); di.onchange=function(){S.due[x[0]]=di.value;save()};
+      b.className="codebtn"; b.textContent="Générer le code";
+      b.onclick=function(){ $("plan").hidden=true; $("q").value="Donne-moi le code JavaScript pour ajouter cette amélioration à mon interface de chat IA (un seul fichier HTML, sans serveur) : "+x[2]+". Indique où l’insérer."; send(); };
+      ac.appendChild(di); ac.appendChild(b);
+    }
+    box.appendChild(d);
+  });
+}
+$("planbtn").onclick=function(){ renderPlan(); $("plan").hidden=false; $("side").classList.remove("open"); };
+$("pclose").onclick=function(){ $("plan").hidden=true; };
+/* ---------- étapes 4 et 5 ---------- */
+var NEWSY=/actualit|nouvelle|dernier|derni[eè]re|aujourd|récent|recent|news|ce matin|hier|cette semaine|en ce moment|breaking/i;
+function kwNews(q){ return q.toLowerCase().replace(/[?!.,;:"()]/g," ").split(/\s+/).filter(function(w){return w.length>3&&!/^(quel|quelle|quels|quelles|dans|pour|avec|sont|comment|pourquoi|dernières|derniers|dernière|dernier|actualité|actualités|nouvelles|aujourd|peux|peut|veux|donne|dis|moi|nous|vous|cette|cela|plus|très|about|news|latest|récent|récentes)$/.test(w)}).slice(0,4).join(" "); }
+async function newsSearch(q){
+  var kw=kwNews(q); if(!kw) return [];
+  var ac=new AbortController(), tm=setTimeout(function(){ac.abort()},8000);
+  try{
+    var r=await fetch("https://api.gdeltproject.org/api/v2/doc/doc?query="+encodeURIComponent(kw)+"&mode=artlist&maxrecords=8&sort=datedesc&timespan=7d&format=json",{signal:ac.signal});
+    var j=JSON.parse(await r.text());
+    return (j.articles||[]).filter(function(a){return a&&a.title&&a.url}).map(function(a){return {t:a.title,x:(a.domain||"")+(a.seendate?" · "+a.seendate.slice(0,8):""),u:a.url}});
+  } finally { clearTimeout(tm); }
+}
+async function webSearch(q){
+  var out=[];
+  if(NEWSY.test(q)){ try{ out=(await newsSearch(q)).map(function(x){x.news=1;return x}); }catch(e){} }
+  try{ out=out.concat(await wikiSearch(q)); }catch(e){ if(!out.length) throw e; }
+  return out;
+}
+var pdfP=null, PDFV="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/";
+function loadPdfJs(){
+  if(window.pdfjsLib&&pdfjsLib.GlobalWorkerOptions.workerSrc) return Promise.resolve();
+  if(pdfP) return pdfP;
+  pdfP=new Promise(function(ok,ko){
+    var sc=document.createElement("script"); sc.src=PDFV+"pdf.min.js";
+    sc.onload=function(){ fetch(PDFV+"pdf.worker.min.js").then(function(r){return r.text()}).then(function(t){ pdfjsLib.GlobalWorkerOptions.workerSrc=URL.createObjectURL(new Blob([t],{type:"text/javascript"})); ok(); }).catch(function(){ pdfP=null; ko(new Error("composant PDF indisponible")); }); };
+    sc.onerror=function(){ pdfP=null; ko(new Error("impossible de charger pdf.js (réseau ou bloqueur)")); };
+    document.head.appendChild(sc);
+  });
+  return pdfP;
+}
+async function readPdf(f){
+  if(f.size>20000000){ $("chip").textContent="PDF trop gros (20 Mo maximum)."; return; }
+  $("chip").textContent="Lecture du PDF…";
+  try{
+    await loadPdfJs();
+    var doc=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise, tx="", n=Math.min(doc.numPages,40);
+    for(var i=1;i<=n&&tx.length<20000;i++){ var pg=await doc.getPage(i), c=await pg.getTextContent(); tx+="\n--- page "+i+" ---\n"+c.items.map(function(x){return x.str}).join(" "); }
+    if(tx.replace(/--- page \d+ ---|\s/g,"").length<20){ $("chip").textContent="Ce PDF ne contient pas de texte (scanné ?). Joignez plutôt ses pages en images."; return; }
+    pend={name:f.name,text:tx.slice(0,20000)};
+    $("chip").textContent="📎 "+f.name+" ("+Math.min(doc.numPages,n)+"/"+doc.numPages+" pages lues"+(tx.length>20000?", tronqué":"")+") — joint au prochain message";
+  }catch(e){ $("chip").textContent="Lecture du PDF impossible : "+errText(e); }
+}
+function readImage(f){
+  if(f.size>15000000){ $("chip").textContent="Image trop grosse (15 Mo maximum)."; return; }
+  var rd=new FileReader();
+  rd.onload=function(){
+    var im=new Image();
+    im.onload=function(){
+      var k=Math.min(1,1280/Math.max(im.width,im.height)), cv=document.createElement("canvas");
+      cv.width=Math.round(im.width*k); cv.height=Math.round(im.height*k);
+      cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);
+      pend={name:f.name,img:cv.toDataURL("image/jpeg",0.8)};
+      $("chip").textContent="🖼 "+f.name+" — jointe au prochain message (un modèle avec vision est utilisé : Gemini en priorité si vous avez une clé)";
+    };
+    im.onerror=function(){ $("chip").textContent="Image illisible."; };
+    im.src=rd.result;
+  };
+  rd.readAsDataURL(f);
+}
+if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")) navigator.serviceWorker.register("sw.js").catch(function(){});
+var dip=null;
+window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); dip=e; $("inst").hidden=false; });
+$("inst").onclick=function(){ if(dip){ dip.prompt(); dip=null; $("inst").hidden=true; } };
+function onl(){
+  var w=$("warn");
+  if(!navigator.onLine){ w.hidden=false; w.textContent="Hors ligne : l’historique et l’espace code restent disponibles, mais l’IA demande une connexion."; }
+  else if(/Hors ligne/.test(w.textContent)) w.hidden=true;
+}
+window.addEventListener("online",onl); window.addEventListener("offline",onl); onl();
+renderAll();
+</script>
+</body>
+</html>
